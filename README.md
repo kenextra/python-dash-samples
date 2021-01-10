@@ -28,7 +28,7 @@ Some data visualization examples with dash
     ```
     *For windows*
     ```
-    python3 -m venv env
+    python -m venv env
     env\Scripts\activate
     ```
 
