@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pylint = "*"
+autopep8 = "*"
+
+[packages]
+dash = "==1.13.3"
+pandas = "==1.0.5"
+jupyterlab = "*"
+
+[requires]
+python_version = "3.8"
