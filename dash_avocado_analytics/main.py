@@ -85,6 +85,21 @@ app.layout = html.Div(
                         ),
                     ]
                 ),
+                html.Div(
+                    children=[
+                        html.Div(children="Graph", className="menu-title"),
+                        dcc.Dropdown(
+                            id="graph-filter",
+                            options=[
+                                {"label": graph, "value": graph}
+                                for graph in ['lines', 'bar']
+                            ],
+                            value="lines",
+                            clearable=False,
+                            className="dropdown",
+                        ),
+                    ]
+                ),
             ],
             className="menu",
         ),
@@ -116,9 +131,10 @@ app.layout = html.Div(
         Input("type-filter", "value"),
         Input("date-range", "start_date"),
         Input("date-range", "end_date"),
+        Input("graph-filter", "value")
     ],
 )
-def update_charts(region, avocado_type, start_date, end_date):
+def update_charts(region, avocado_type, start_date, end_date, graph_type):
     mask = (
         (data.region == region)
         & (data.type == avocado_type)
@@ -126,18 +142,22 @@ def update_charts(region, avocado_type, start_date, end_date):
         & (data.Date <= end_date)
     )
     filtered_data = data.loc[mask, :]
+
+    if region == 'TotalUS':
+        region = 'USA'
+
     price_chart_figure = {
         "data": [
             {
                 "x": filtered_data["Date"],
                 "y": filtered_data["AveragePrice"],
-                "type": "lines",
+                "type": graph_type,
                 "hovertemplate": "$%{y:.2f}<extra></extra>",
             },
         ],
         "layout": {
             "title": {
-                "text": "Average Price of Avocados",
+                "text": f"Average Price of Avocados in {region}",
                 "x": 0.05,
                 "xanchor": "left",
             },
@@ -152,11 +172,15 @@ def update_charts(region, avocado_type, start_date, end_date):
             {
                 "x": filtered_data["Date"],
                 "y": filtered_data["Total Volume"],
-                "type": "lines",
+                "type": graph_type,
             },
         ],
         "layout": {
-            "title": {"text": "Avocados Sold", "x": 0.05, "xanchor": "left"},
+            "title": {
+                "text": f"Avocados Sold in {region}",
+                "x": 0.05,
+                "xanchor": "left"
+            },
             "xaxis": {"fixedrange": True},
             "yaxis": {"fixedrange": True},
             "colorway": ["#E12D39"],
