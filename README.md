@@ -17,7 +17,7 @@ Some data visualization examples with dash
 1. Change directory to one of the sample folders, e.g. `avocado_analytics`:
 
     ```
-    cd avocado_analytics/
+    cd dash_avocado_analytics/
     ```
 
 2. Create a virtualenv. Samples are compatible with Python 3.6+.
