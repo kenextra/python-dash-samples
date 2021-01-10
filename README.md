@@ -14,7 +14,7 @@ Some data visualization examples with dash
 
 ## How to run a sample
 
-1. Change directory to one of the sample folders, e.g. `avocado_analytics`:
+1. Change directory to one of the sample folders, e.g. `dash_avocado_analytics`:
 
     ```
     cd dash_avocado_analytics/
@@ -24,9 +24,13 @@ Some data visualization examples with dash
 
     ```
     python3 -m venv env
-    
     source env/bin/activate
-
+    env\Scripts\activate
+    ```
+    
+    *For windows*
+    ```
+    python3 -m venv env
     env\Scripts\activate
     ```
 
