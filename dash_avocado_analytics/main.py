@@ -85,21 +85,6 @@ app.layout = html.Div(
                         ),
                     ]
                 ),
-                html.Div(
-                    children=[
-                        html.Div(children="Graph", className="menu-title"),
-                        dcc.Dropdown(
-                            id="graph-filter",
-                            options=[
-                                {"label": graph, "value": graph}
-                                for graph in ['lines', 'bar']
-                            ],
-                            value="lines",
-                            clearable=False,
-                            className="dropdown",
-                        ),
-                    ]
-                ),
             ],
             className="menu",
         ),
@@ -116,7 +101,9 @@ app.layout = html.Div(
                         id="volume-chart", config={"displayModeBar": False},
                     ),
                     className="card",
+
                 ),
+
             ],
             className="wrapper",
         ),
@@ -124,17 +111,16 @@ app.layout = html.Div(
 )
 
 
-@app.callback(
+@ app.callback(
     [Output("price-chart", "figure"), Output("volume-chart", "figure")],
     [
         Input("region-filter", "value"),
         Input("type-filter", "value"),
         Input("date-range", "start_date"),
         Input("date-range", "end_date"),
-        Input("graph-filter", "value")
     ],
 )
-def update_charts(region, avocado_type, start_date, end_date, graph_type):
+def update_charts(region, avocado_type, start_date, end_date):
     mask = (
         (data.region == region)
         & (data.type == avocado_type)
@@ -142,27 +128,48 @@ def update_charts(region, avocado_type, start_date, end_date, graph_type):
         & (data.Date <= end_date)
     )
     filtered_data = data.loc[mask, :]
-
-    if region == 'TotalUS':
-        region = 'USA'
-
     price_chart_figure = {
         "data": [
             {
                 "x": filtered_data["Date"],
                 "y": filtered_data["AveragePrice"],
-                "type": graph_type,
+                "type": "lines",
                 "hovertemplate": "$%{y:.2f}<extra></extra>",
+                "name": 'avg. price',
+                "marker": dict(
+                    color='rgb(55, 83, 109)'
+                ),
+            },
+            {
+                "x": filtered_data["Date"],
+                "y": filtered_data["Total Volume"],
+                "type": "lines",
+                "name": 'qty. sold',
+                "marker": dict(
+                    color='rgb(225, 0, 0)'
+                ),
+                "yaxis": "y2",
             },
         ],
         "layout": {
             "title": {
-                "text": f"Average Price of Avocados in {region}",
+                "text": "Average Price of Avocados",
                 "x": 0.05,
                 "xanchor": "left",
             },
-            "xaxis": {"fixedrange": True},
-            "yaxis": {"tickprefix": "$", "fixedrange": True},
+            'showlegend': True,
+            'legend': {'x': 0, 'y': 1,
+                       'traceorder': 'normal',
+                       'bgcolor': 'rgba(200, 200, 200, 0.4)'
+                       },
+            "xaxis": {"fixedrange": True, 'showline': True, },
+            "yaxis": {"title": "avocado price", "tickprefix": "$", 'side': 'left', 'showline': True,
+                      "titlefont": dict(color='rgb(55, 83, 109)'),
+                      },
+            'yaxis2': {'showline': True, 'side': 'right', "anchor": "x",
+                       "overlaying": "y", "title": "avocado count",
+                       "titlefont": dict(color='rgb(225, 0, 0)'),
+                       },
             "colorway": ["#17B897"],
         },
     }
@@ -172,15 +179,11 @@ def update_charts(region, avocado_type, start_date, end_date, graph_type):
             {
                 "x": filtered_data["Date"],
                 "y": filtered_data["Total Volume"],
-                "type": graph_type,
+                "type": "lines",
             },
         ],
         "layout": {
-            "title": {
-                "text": f"Avocados Sold in {region}",
-                "x": 0.05,
-                "xanchor": "left"
-            },
+            "title": {"text": "Avocados Sold", "x": 0.05, "xanchor": "left"},
             "xaxis": {"fixedrange": True},
             "yaxis": {"fixedrange": True},
             "colorway": ["#E12D39"],
