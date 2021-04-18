@@ -1,7 +1,8 @@
 # python-dash-samples
 
 Some data visualization examples with dash
-Reproduced Tutorial from Real Python and hosted it on GCP
+
+Reproduced Tutorial from [Real Python](https://realpython.com/python-dash/) and hosted it on GCP
 
 ## Setup
 
